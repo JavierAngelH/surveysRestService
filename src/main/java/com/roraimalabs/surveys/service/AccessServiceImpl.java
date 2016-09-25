@@ -36,25 +36,30 @@ public class AccessServiceImpl implements AccessService {
 	@Override
 	public void saveRecords(long id, String jsonString, RecordType type) throws ParseException {
 		JSONObject objects = new JSONObject(jsonString);
-		System.out.println(objects);
 
+		String dateString = objects.getString("DATE");		
+		Date date = dateFormat.parse(dateString);
+		
+		objects.remove("DATE");
 		Iterator<?> keys = objects.keys();
 
-		String dateString = objects.getString("DATE");
-		Date date = dateFormat.parse(dateString);
 
 		if (type.getRecordType() == 1) {
 
 			while (keys.hasNext()) {
 				String questionId = (String) keys.next();
 				String answerId = (String) objects.get(questionId);
-				resultsDAO.insertSurveyResult(date, 1, questionId, answerId);
+				if(answerId.equals("undefined"))
+					answerId="";
+				resultsDAO.insertSurveyResult(date, (int) id, questionId, answerId);
 			}
 		} else if (type.getRecordType() == 2) {
 			while (keys.hasNext()) {
 				String questionId = (String) keys.next();
 				String answerId = (String) objects.get(questionId);
-				resultsDAO.insertObservationResult(date, 1, questionId, answerId);
+				if(answerId.equals("undefined"))
+					answerId="";
+				resultsDAO.insertObservationResult(date, (int) id, questionId, answerId);
 
 			}
 		}
