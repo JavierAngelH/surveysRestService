@@ -1,4 +1,4 @@
-/** 
+/**
  * AccessServiceImpl.java Created: Sep 24, 2016 JavierAngelH
  */
 
@@ -28,38 +28,34 @@ public class AccessServiceImpl implements AccessService {
 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/M/yyyy HH:mm");
 
-	/**
-	 * @throws ParseException
-	 * @see com.roraimalabs.surveys.service.AccessService#saveRecords(long,
-	 *      java.lang.String)
-	 */
 	@Override
 	public void saveRecords(long id, String jsonString, RecordType type) throws ParseException {
 		JSONObject objects = new JSONObject(jsonString);
 
-		String dateString = objects.getString("DATE");		
-		Date date = dateFormat.parse(dateString);
-		
+		String dateString = objects.getString("DATE");
+		Date date = this.dateFormat.parse(dateString);
+
 		objects.remove("DATE");
 		Iterator<?> keys = objects.keys();
-
 
 		if (type.getRecordType() == 1) {
 
 			while (keys.hasNext()) {
 				String questionId = (String) keys.next();
 				String answerId = (String) objects.get(questionId);
-				if(answerId.equals("undefined"))
-					answerId="";
-				resultsDAO.insertSurveyResult(date, (int) id, questionId, answerId);
+				if (answerId.equals("undefined")) {
+					answerId = "";
+				}
+				this.resultsDAO.insertSurveyResult(date, (int) id, questionId, answerId);
 			}
 		} else if (type.getRecordType() == 2) {
 			while (keys.hasNext()) {
 				String questionId = (String) keys.next();
 				String answerId = (String) objects.get(questionId);
-				if(answerId.equals("undefined"))
-					answerId="";
-				resultsDAO.insertObservationResult(date, (int) id, questionId, answerId);
+				if (answerId.equals("undefined")) {
+					answerId = "";
+				}
+				this.resultsDAO.insertObservationResult(date, (int) id, questionId, answerId);
 
 			}
 		}
